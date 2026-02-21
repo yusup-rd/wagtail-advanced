@@ -13,4 +13,9 @@
         {% image page.image width-400 format-avif-lossless %}
         {% image page.image width-400 format-webp-lossless %}
     {% endif %}
+    {% if page.custom_document %}
+        <p>
+            Document: <a href="{{ page.custom_document.url }}">{{ page.custom_document.title }} - {{ page.custom_document.description }}</a>
+        </p>
+    {% endif %}
 {% endblock content %}

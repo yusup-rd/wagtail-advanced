@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     "home",
     "search",
     "images",
+    "documents",
 
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",
@@ -177,6 +178,8 @@ WAGTAILSEARCH_BACKENDS = {
 WAGTAILADMIN_BASE_URL = "http://example.com"
 
 WAGTAILIMAGES_IMAGE_MODEL = "images.CustomImage"
+
+WAGTAILDOCS_DOCUMENT_MODEL = "documents.CustomDocument"
 
 # Allowed file extensions for documents in the document library.
 # This can be omitted to allow all files, but note that this may present a security risk
