@@ -8,6 +8,7 @@ from wagtail.documents import get_document_model_string
 
 class HomePage(Page):
     template = "home/home_page.html"
+    max_count = 1
 
     subtitle = models.CharField(max_length=100, blank=True, null=True)
     content = RichTextField(blank=True)
