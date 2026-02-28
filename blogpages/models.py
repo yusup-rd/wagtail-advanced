@@ -2,6 +2,7 @@ from django.db import models
 from wagtail.models import Page
 from wagtail.fields import RichTextField
 from wagtail.admin.panels import FieldPanel
+from django.core.exceptions import ValidationError
 
 
 class BlogIndex(Page):
@@ -36,3 +37,26 @@ class BlogDetail(Page):
         FieldPanel("subtitle"),
         FieldPanel("body"),
     ]
+
+    def clean(self):
+        super().clean()
+
+        errors = {}
+
+        if 'blog' in self.title.lower():
+            errors['title'] = ValidationError(
+                "The title cannot contain the word 'blog'."
+            )
+
+        if 'blog' in self.subtitle.lower():
+            errors['subtitle'] = ValidationError(
+                "The subtitle cannot contain the word 'blog'."
+            )
+
+        if 'blog' in self.slug.lower():
+            errors['slug'] = ValidationError(
+                "The slug cannot contain the word 'blog'."
+            )
+
+        if errors:
+            raise ValidationError(errors)
