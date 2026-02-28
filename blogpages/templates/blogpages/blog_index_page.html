@@ -4,4 +4,13 @@
     <h1>{{ page.title }}</h1>
     <h3>{{ page.subtitle }}</h3>
     <p>{{ page.body|richtext }}</p>
+    <hr>
+    <h4>Blog Posts:</h4>
+    {% for blog_post in blogpages %}
+        <p>
+            <a href="{{ blog_post.url }}">{{ blog_post.title }}</a>
+        </p>
+        <p>{{ blog_post.subtitle }}</p>
+        <hr>
+    {% endfor %}
 {% endblock content %}

@@ -18,6 +18,12 @@ class BlogIndex(Page):
         FieldPanel("body"),
     ]
 
+    def get_context(self, request):
+        context = super().get_context(request)
+        context['blogpages'] = BlogDetail.objects.live(
+        ).public()
+        return context
+
 
 class BlogDetail(Page):
     subtitle = models.CharField(max_length=255, blank=True)
