@@ -2,4 +2,7 @@
 {% load wagtailcore_tags %}
 {% block content %}
     {{ page.body|richtext }}
+    {% for tag in page.tags.all %}
+        <a href="/blog/?tag={{ tag.slug }}">{{ tag.name }}</a>
+    {% endfor %}
 {% endblock content %}
