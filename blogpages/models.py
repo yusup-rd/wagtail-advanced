@@ -7,7 +7,7 @@ from modelcluster.fields import ParentalKey
 from modelcluster.tags import ClusterTaggableManager
 from taggit.models import TaggedItemBase
 from wagtail.fields import StreamField
-from wagtail.blocks import TextBlock
+from wagtail.blocks import TextBlock, StructBlock, StreamBlock
 from wagtail.images.blocks import ImageChooserBlock
 
 
@@ -43,10 +43,18 @@ class BlogDetail(Page):
         [
             ('text', TextBlock()),
             ('image', ImageChooserBlock()),
+            ('carousel', StreamBlock([
+                ('image', ImageChooserBlock()),
+                ('quotation', StructBlock([
+                    ('text', TextBlock()),
+                    ('author', TextBlock()),
+                ])),
+            ]))
         ],
         block_counts={
             'text': {'min_num': 1, 'max_num': 1},
             'image': {'min_num': 1, 'max_num': 2},
+            'carousel': {'min_num': 0, 'max_num': 1},
         },
         use_json_field=True,
         blank=True,

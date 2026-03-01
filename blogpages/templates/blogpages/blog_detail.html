@@ -1,11 +1,24 @@
 {% extends "base.html" %}
-{% load wagtailcore_tags %}
+{% load wagtailcore_tags wagtailimages_tags %}
 {% block content %}
     {% for block in page.body %}
         {% if block.block_type == "text" %}
             <div class="text-block">{{ block.value }}</div>
         {% elif block.block_type == "image" %}
-            <div class="image-block">{{ block.value }}</div>
+            <div class="image-block">{% image block.value width-800 %}</div>
+        {% elif block.block_type == "carousel" %}
+            <div class="carousel-block">
+                {% for carousel_block in block.value %}
+                    {% if carousel_block.block_type == "image" %}
+                        <div class="carousel-image">{% image carousel_block.value width-600 %}</div>
+                    {% elif carousel_block.block_type == "quotation" %}
+                        <div class="carousel-quotation">
+                            <p>{{ carousel_block.value.text }}</p>
+                            <strong class="author">{{ carousel_block.value.author }}</strong>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
         {% endif %}
     {% endfor %}
     {% for tag in page.tags.all %}<a href="/blog/?tag={{ tag.slug }}">{{ tag.name }}</a>{% endfor %}
