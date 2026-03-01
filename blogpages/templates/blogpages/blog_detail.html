@@ -1,8 +1,12 @@
 {% extends "base.html" %}
 {% load wagtailcore_tags %}
 {% block content %}
-    {{ page.body|richtext }}
-    {% for tag in page.tags.all %}
-        <a href="/blog/?tag={{ tag.slug }}">{{ tag.name }}</a>
+    {% for block in page.body %}
+        {% if block.block_type == "text" %}
+            <div class="text-block">{{ block.value }}</div>
+        {% elif block.block_type == "image" %}
+            <div class="image-block">{{ block.value }}</div>
+        {% endif %}
     {% endfor %}
+    {% for tag in page.tags.all %}<a href="/blog/?tag={{ tag.slug }}">{{ tag.name }}</a>{% endfor %}
 {% endblock content %}

@@ -6,6 +6,9 @@ from django.core.exceptions import ValidationError
 from modelcluster.fields import ParentalKey
 from modelcluster.tags import ClusterTaggableManager
 from taggit.models import TaggedItemBase
+from wagtail.fields import StreamField
+from wagtail.blocks import TextBlock
+from wagtail.images.blocks import ImageChooserBlock
 
 
 class BlogIndex(Page):
@@ -36,7 +39,19 @@ class BlogDetailTags(TaggedItemBase):
 
 class BlogDetail(Page):
     subtitle = models.CharField(max_length=255, blank=True)
-    body = RichTextField(blank=True)
+    body = StreamField(
+        [
+            ('text', TextBlock()),
+            ('image', ImageChooserBlock()),
+        ],
+        block_counts={
+            'text': {'min_num': 1, 'max_num': 1},
+            'image': {'min_num': 1, 'max_num': 2},
+        },
+        use_json_field=True,
+        blank=True,
+        null=True,
+    )
     tags = ClusterTaggableManager(through=BlogDetailTags, blank=True)
 
     parent_page_types = ['blogpages.BlogIndex']
