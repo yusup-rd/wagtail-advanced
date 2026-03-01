@@ -19,6 +19,15 @@
                     {% endif %}
                 {% endfor %}
             </div>
+        {% elif block.block_type == "info" %}
+            <div class="info-block">This is important information for the reader.</div>
+        {% elif block.block_type == "faq" %}
+            <div class="faq-block">
+                {% for faq in block.value %}
+                    <h3>{{ faq.question }}</h3>
+                    <p>{{ faq.answer }}</p>
+                {% endfor %}
+            </div>
         {% endif %}
     {% endfor %}
     {% for tag in page.tags.all %}<a href="/blog/?tag={{ tag.slug }}">{{ tag.name }}</a>{% endfor %}

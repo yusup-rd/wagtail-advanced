@@ -7,7 +7,7 @@ from modelcluster.fields import ParentalKey
 from modelcluster.tags import ClusterTaggableManager
 from taggit.models import TaggedItemBase
 from wagtail.fields import StreamField
-from wagtail.blocks import TextBlock, StructBlock, StreamBlock
+from wagtail import blocks
 from wagtail.images.blocks import ImageChooserBlock
 
 
@@ -41,13 +41,23 @@ class BlogDetail(Page):
     subtitle = models.CharField(max_length=255, blank=True)
     body = StreamField(
         [
-            ('text', TextBlock()),
+            ('info', blocks.CharBlock(
+                help_text="This is an info block. It can be used to display important information to the reader."
+            )),
+            ('faq', blocks.ListBlock(
+                blocks.StructBlock([
+                    ('question', blocks.CharBlock()),
+                    ('answer', blocks.RichTextBlock(
+                        features=['bold', 'italic', 'link'])),
+                ])
+            )),
+            ('text', blocks.TextBlock()),
             ('image', ImageChooserBlock()),
-            ('carousel', StreamBlock([
+            ('carousel', blocks.StreamBlock([
                 ('image', ImageChooserBlock()),
-                ('quotation', StructBlock([
-                    ('text', TextBlock()),
-                    ('author', TextBlock()),
+                ('quotation', blocks.StructBlock([
+                    ('text', blocks.TextBlock()),
+                    ('author', blocks.TextBlock()),
                 ])),
             ]))
         ],
