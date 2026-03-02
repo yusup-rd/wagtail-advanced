@@ -1,0 +1,7 @@
+{% load wagtailcore_tags %}
+{% for faq in self %}
+    <div class="faq-item">
+        <h3>{{ faq.question }}</h3>
+        <p>{{ faq.answer|richtext }}</p>
+    </div>
+{% endfor %}

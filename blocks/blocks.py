@@ -10,8 +10,9 @@ class TextBlock(blocks.TextBlock):
                          )
 
     class Meta:
-        # template = "..."
-        ...
+        template = "blocks/text_block.html"
+        icon = "doc-full"
+        group = "Standalone Blocks"
 
 
 class ImageBlock(ImageChooserBlock):
@@ -21,8 +22,7 @@ class ImageBlock(ImageChooserBlock):
                          )
 
     class Meta:
-        # template = "..."
-        ...
+        template = "blocks/image_block.html"
 
 
 class InfoBlock(blocks.StaticBlock):
@@ -44,7 +44,7 @@ class FAQListBlock(blocks.ListBlock):
 
     class Meta:
         # icon = "..."
-        # template = "..."
+        template = "blocks/faq_list_block.html"
         min_num = 1
         max_num = 5
         label = "Frequently Asked Questions"
@@ -59,5 +59,5 @@ class CarouselBlock(blocks.StreamBlock):
 
     class Meta:
         # icon = "..."
-        # template = "..."
+        template = "blocks/carousel_block.html"
         label = "Image Carousel"
