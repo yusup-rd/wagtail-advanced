@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from wagtail import blocks
 from wagtail.images.blocks import ImageChooserBlock
 
@@ -14,6 +15,17 @@ class TextBlock(blocks.TextBlock):
         context["text"] = value
         context["char_count"] = len(value or "")
         return context
+
+    def clean(self, value):
+        value = super().clean(value)
+        if 'wordpress' in value.lower():
+            raise ValidationError(
+                "The word 'WordPress' is not allowed in this text block.")
+        if len(value) < 10:
+            raise ValidationError("Text must be at least 10 characters long.")
+        if len(value) > 2000:
+            raise ValidationError("Text must not exceed 2000 characters.")
+        return value
 
     class Meta:
         template = "blocks/text_block.html"
@@ -32,6 +44,12 @@ class ImageBlock(ImageChooserBlock):
         context["image"] = value
         context["has_image"] = value is not None
         return context
+
+    def clean(self, value):
+        value = super().clean(value)
+        if value is None:
+            raise ValidationError("Please select an image.")
+        return value
 
     class Meta:
         template = "blocks/image_block.html"
@@ -62,6 +80,20 @@ class FAQBlock(blocks.StructBlock):
         context["question_anchor"] = question.strip().lower().replace(" ", "-")
         return context
 
+    def clean(self, value):
+        value = super().clean(value)
+        errors = {}
+        question = value.get("question", "") if value else ""
+        if len(question) < 5:
+            errors["question"] = ValidationError(
+                "Question must be at least 5 characters long.")
+        if len(question) > 200:
+            errors["question"] = ValidationError(
+                "Question must not exceed 200 characters.")
+        if errors:
+            raise blocks.StructBlockValidationError(block_errors=errors)
+        return value
+
 
 class FAQListBlock(blocks.ListBlock):
     def __init__(self, **kwargs):
@@ -72,6 +104,21 @@ class FAQListBlock(blocks.ListBlock):
         context["faqs"] = value
         context["faq_count"] = len(value or [])
         return context
+
+    def clean(self, value):
+        value = super().clean(value)
+        errors = {}
+        seen_questions = []
+        for i, faq in enumerate(value):
+            question = faq.get("question", "").strip().lower()
+            if question in seen_questions:
+                errors[i] = ValidationError(
+                    "Duplicate question: each FAQ must have a unique question.")
+            else:
+                seen_questions.append(question)
+        if errors:
+            raise blocks.ListBlockValidationError(block_errors=errors)
+        return value
 
     class Meta:
         # icon = "..."
@@ -93,6 +140,17 @@ class CarouselBlock(blocks.StreamBlock):
         context["slides"] = value
         context["slide_count"] = len(value or [])
         return context
+
+    def clean(self, value):
+        value = super().clean(value)
+        image_slides = [
+            block for block in value if block.block_type == "image"]
+        if not image_slides:
+            raise blocks.StreamBlockValidationError(
+                non_block_errors=[ValidationError(
+                    "The carousel must contain at least one image.")]
+            )
+        return value
 
     class Meta:
         # icon = "..."
