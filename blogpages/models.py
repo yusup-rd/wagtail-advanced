@@ -1,13 +1,15 @@
 from django.db import models
-from wagtail.models import Page
+from wagtail.models import Page, DraftStateMixin, RevisionMixin, LockableMixin, PreviewableMixin
 from wagtail.fields import RichTextField
-from wagtail.admin.panels import FieldPanel
+from wagtail.admin.panels import FieldPanel, PublishingPanel
 from django.core.exceptions import ValidationError
 from modelcluster.fields import ParentalKey
 from modelcluster.tags import ClusterTaggableManager
 from taggit.models import TaggedItemBase
 from wagtail.fields import StreamField
 from blocks import blocks as custom_blocks
+from django.contrib.contenttypes.fields import GenericRelation
+from wagtail.search import index
 
 
 class BlogIndex(Page):
@@ -56,11 +58,19 @@ class BlogDetail(Page):
         null=True,
     )
     tags = ClusterTaggableManager(through=BlogDetailTags, blank=True)
+    author = models.ForeignKey(
+        'blogpages.Author',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+'
+    )
 
     parent_page_types = ['blogpages.BlogIndex']
     subpage_types = []
 
     content_panels = Page.content_panels + [
+        FieldPanel("author"),
         FieldPanel("subtitle"),
         FieldPanel("body"),
         FieldPanel("tags"),
@@ -88,3 +98,44 @@ class BlogDetail(Page):
 
         if errors:
             raise ValidationError(errors)
+
+
+class Author(LockableMixin, index.Indexed, DraftStateMixin, PreviewableMixin, RevisionMixin, models.Model):
+    name = models.CharField(max_length=100)
+    bio = RichTextField()
+    revisions = GenericRelation(
+        'wagtailcore.Revision', related_query_name='author')
+    panels = [
+        FieldPanel("name"),
+        FieldPanel("bio"),
+        PublishingPanel(),
+    ]
+
+    search_fields = Page.search_fields + [
+        index.SearchField('name'),
+        index.FilterField('name'),
+        index.AutocompleteField('name'),
+    ]
+
+    def __str__(self):
+        return self.name
+
+    @property
+    def preview_modes(self):
+        return PreviewableMixin.DEFAULT_PREVIEW_MODES + [
+            ('dark_mode', 'Dark Mode'),
+        ]
+
+    def get_preview_template(self, request, mode_name):
+        templates = {
+            "": "includes/author.html",
+            'dark_mode': 'includes/author_dark_mode.html',
+        }
+        return templates.get(mode_name, templates[""])
+
+    def get_preview_context(self, request, mode_name):
+        context = super().get_preview_context(request, mode_name)
+        if mode_name == 'dark_mode':
+            context['warning'] = "You're in dark mode preview!"
+
+        return context

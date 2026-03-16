@@ -4,6 +4,7 @@ from wagtail.snippets.views.snippets import SnippetViewSet
 from taggit.models import Tag
 from django.core.cache import cache
 from wagtail import hooks
+from blogpages.models import Author
 
 
 @register_snippet
@@ -18,6 +19,17 @@ class TagViewSet(SnippetViewSet):
     panels = [
         FieldPanel("name"),
         FieldPanel("slug"),
+    ]
+
+
+@register_snippet
+class AuthorSnippet(SnippetViewSet):
+    model = Author
+    icon = "user"
+    add_to_admin_menu = True
+    panels = [
+        FieldPanel("name"),
+        FieldPanel("bio"),
     ]
 
 
