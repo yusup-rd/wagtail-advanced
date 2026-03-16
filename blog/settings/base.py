@@ -192,3 +192,6 @@ WAGTAILDOCS_EXTENSIONS = ['csv', 'docx', 'key',
 
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
+WAGTAIL_FRONTEND_LOGIN_TEMPLATE = "login.html"
+WAGTAIL_PASSWORD_REQUIRED_TEMPLATE = "password_required.html"
