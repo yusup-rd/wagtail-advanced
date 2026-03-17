@@ -111,7 +111,7 @@ class Author(LockableMixin, index.Indexed, DraftStateMixin, PreviewableMixin, Re
         PublishingPanel(),
     ]
 
-    search_fields = Page.search_fields + [
+    search_fields = [
         index.SearchField('name'),
         index.FilterField('name'),
         index.AutocompleteField('name'),
@@ -139,3 +139,8 @@ class Author(LockableMixin, index.Indexed, DraftStateMixin, PreviewableMixin, Re
             context['warning'] = "You're in dark mode preview!"
 
         return context
+
+    class Meta:
+        permissions = [
+            ("can_edit_author_name", "Can edit author name"),
+        ]
