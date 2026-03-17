@@ -1,38 +1,59 @@
 {% extends "base.html" %}
-{% load static wagtailcore_tags %}
-
-{% block body_class %}template-searchresults{% endblock %}
-
-{% block title %}Search{% endblock %}
-
+{% load static wagtailcore_tags wagtailsearchpromotions_tags %}
+{% block body_class %}
+    template-searchresults
+{% endblock body_class %}
+{% block title %}
+    Search
+{% endblock title %}
 {% block content %}
-<h1>Search</h1>
-
-<form action="{% url 'search' %}" method="get">
-    <input type="text" name="query"{% if search_query %} value="{{ search_query }}"{% endif %}>
-    <input type="submit" value="Search" class="button">
-</form>
-
-{% if search_results %}
-<ul>
-    {% for result in search_results %}
-    <li>
-        <h4><a href="{% pageurl result %}">{{ result }}</a></h4>
-        {% if result.search_description %}
-        {{ result.search_description }}
+    <h1>Search</h1>
+    <form action="{% url 'search' %}" method="get">
+        <input type="text"
+               name="query"
+               {% if search_query %}value="{{ search_query }}"{% endif %}>
+        <input type="submit" value="Search" class="button">
+    </form>
+    {% get_search_promotions search_query as search_promotions %}
+    <p>Promoted Results:</p>
+    {% for sp in search_promotions %}
+        {% if sp.page %}
+            <li>
+                <a href="{% pageurl sp.page %}">
+                    <h2>{{ sp.page.title }}</h2>
+                    <p>{{ sp.page.description }}</p>
+                </a>
+            </li>
+        {% else %}
+            <li>
+                <a href="{{ sp.external_link_url }}"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    <h2>{{ sp.title }}</h2>
+                    <p>{{ sp.description }}</p>
+                </a>
+            </li>
         {% endif %}
-    </li>
     {% endfor %}
-</ul>
-
-{% if search_results.has_previous %}
-<a href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ search_results.previous_page_number }}">Previous</a>
-{% endif %}
-
-{% if search_results.has_next %}
-<a href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ search_results.next_page_number }}">Next</a>
-{% endif %}
-{% elif search_query %}
-No results found
-{% endif %}
-{% endblock %}
+    <p>Search Results:</p>
+    {% if search_results %}
+        <ul>
+            {% for result in search_results %}
+                <li>
+                    <h4>
+                        <a href="{% pageurl result %}">{{ result }}</a>
+                    </h4>
+                    {% if result.search_description %}{{ result.search_description }}{% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+        {% if search_results.has_previous %}
+            <a href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ search_results.previous_page_number }}">Previous</a>
+        {% endif %}
+        {% if search_results.has_next %}
+            <a href="{% url 'search' %}?query={{ search_query|urlencode }}&amp;page={{ search_results.next_page_number }}">Next</a>
+        {% endif %}
+    {% elif search_query %}
+        No results found
+    {% endif %}
+{% endblock content %}

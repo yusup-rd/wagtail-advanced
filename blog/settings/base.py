@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     "blocks",
     "settings",
 
+    "wagtail.contrib.search_promotions",
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",
     "wagtail.embeds",
