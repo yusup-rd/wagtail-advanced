@@ -70,7 +70,7 @@ class BlogDetail(Page):
     subpage_types = []
 
     content_panels = Page.content_panels + [
-        FieldPanel("author"),
+        FieldPanel("author", permission="home.add_author"),
         FieldPanel("subtitle"),
         FieldPanel("body"),
         FieldPanel("tags"),
