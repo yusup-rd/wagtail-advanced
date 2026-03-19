@@ -10,9 +10,11 @@ from wagtail.fields import StreamField
 from blocks import blocks as custom_blocks
 from django.contrib.contenttypes.fields import GenericRelation
 from wagtail.search import index
+from wagtail.contrib.routable_page.models import RoutablePageMixin, path, re_path
+from django.http import JsonResponse
 
 
-class BlogIndex(Page):
+class BlogIndex(RoutablePageMixin, Page):
     template = "blogpages/blog_index_page.html"
     max_count = 1
     parent_page_types = ['home.HomePage']
@@ -25,6 +27,29 @@ class BlogIndex(Page):
         FieldPanel("subtitle"),
         FieldPanel("body"),
     ]
+
+    @path('all/', name='all')
+    def all_blogposts(self, request):
+        posts = BlogDetail.objects.live().public()
+        return self.render(request, context_overrides={'posts': posts})
+
+    @path('tag/<slug:tag>/', name='tag')
+    @path('tags/<slug:tag>/', name='tags')
+    def blogposts_by_tag(self, request, tag):
+        posts = BlogDetail.objects.live().public().filter(tags__slug=tag)
+
+        if not tag:
+            ...  # Redirect in here
+
+        return self.render(request, context_overrides={'posts': posts})
+
+    @re_path(r'^api/(\d+)/$', name='api')
+    def api_response(self, request, year):
+        posts = BlogDetail.objects.live().public().filter(first_published_at__year=year)
+        return JsonResponse({
+            'year': year,
+            'posts': [post.title for post in posts]
+        })
 
     def get_context(self, request):
         context = super().get_context(request)
