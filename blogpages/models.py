@@ -12,6 +12,8 @@ from django.contrib.contenttypes.fields import GenericRelation
 from wagtail.search import index
 from wagtail.contrib.routable_page.models import RoutablePageMixin, path, re_path
 from django.http import JsonResponse
+from wagtail.api import APIField
+from rest_framework.fields import Field
 
 
 class BlogIndex(RoutablePageMixin, Page):
@@ -63,6 +65,13 @@ class BlogDetailTags(TaggedItemBase):
         'BlogDetail', related_name='tagged_items', on_delete=models.CASCADE)
 
 
+class AuthorSerializer(Field):
+    def to_representation(self, value):
+        return {
+            'name': value.name,
+            'bio': value.bio,
+        }
+
 class BlogDetail(Page):
     subtitle = models.CharField(max_length=255, blank=True)
     body = StreamField(
@@ -99,6 +108,13 @@ class BlogDetail(Page):
         FieldPanel("subtitle"),
         FieldPanel("body"),
         FieldPanel("tags"),
+    ]
+
+    api_fields = [
+        APIField("subtitle"),
+        APIField("author", serializer=AuthorSerializer()),
+        APIField("tags"),
+        APIField("body"),
     ]
 
     def clean(self):
