@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     "blogpages",
     "blocks",
     "settings",
+    "contact",
 
     "wagtail.contrib.search_promotions",
     "wagtail.contrib.routable_page",
