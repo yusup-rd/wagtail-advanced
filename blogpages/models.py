@@ -30,6 +30,19 @@ class BlogIndex(RoutablePageMixin, Page):
         FieldPanel("body"),
     ]
 
+    def get_sitemap_urls(self, request=None):
+        sitemap = super().get_sitemap_urls(request)
+        last_mod = BlogDetail.objects.live().public().order_by('-last_published_at').first()
+        sitemap.append({
+            'location': self.get_full_url(request) + self.reverse_subpage('all'),
+            'lastmod': (last_mod.last_published_at or last_mod.latest_revision_created_at),
+        })
+        sitemap.append({
+            'location': self.get_full_url(request) + self.reverse_subpage('tag', args=['wagtail']),
+            'lastmod': (last_mod.last_published_at or last_mod.latest_revision_created_at),
+        })
+        return sitemap
+
     @path('all/', name='all')
     def all_blogposts(self, request):
         posts = BlogDetail.objects.live().public()
@@ -71,6 +84,7 @@ class AuthorSerializer(Field):
             'name': value.name,
             'bio': value.bio,
         }
+
 
 class BlogDetail(Page):
     subtitle = models.CharField(max_length=255, blank=True)
