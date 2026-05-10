@@ -10,5 +10,7 @@
 {% endfor %}
 {% endwagtailpagecache %}
 
-{% include "includes/author_dark_mode.html" %}
+{% if page.author %}
+    {% include "includes/author_dark_mode.html" with object=page.author %}
+{% endif %}
 {% endblock content %}

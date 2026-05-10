@@ -35,6 +35,8 @@ INSTALLED_APPS = [
 
     "wagtail.contrib.search_promotions",
     "wagtail.contrib.routable_page",
+    "wagtail.contrib.simple_translation",
+    "wagtail.locales",
     "wagtail.api.v2",
     "rest_framework",
     "wagtail.contrib.forms",
@@ -68,6 +70,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
 ]
 
@@ -133,6 +136,14 @@ LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 
 USE_I18N = True
+USE_L10N = True
+WAGTAIL_I18N_ENABLED = True
+WAGTAILSIMPLETRANSLATION_SYNC_PAGE_TREE = True
+WAGTAIL_CONTENT_LANGUAGES = LANGUAGES = [
+    ("en", "English"),
+    ("fr", "French"),
+    ("de", "German"),
+]
 
 USE_TZ = True
 

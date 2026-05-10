@@ -1,5 +1,5 @@
 from django.db import models
-from wagtail.models import Page, DraftStateMixin, RevisionMixin, LockableMixin, PreviewableMixin
+from wagtail.models import Page, DraftStateMixin, RevisionMixin, LockableMixin, PreviewableMixin, TranslatableMixin
 from wagtail.fields import RichTextField
 from wagtail.admin.panels import FieldPanel, PublishingPanel
 from django.core.exceptions import ValidationError
@@ -155,7 +155,7 @@ class BlogDetail(Page):
             raise ValidationError(errors)
 
 
-class Author(LockableMixin, index.Indexed, DraftStateMixin, PreviewableMixin, RevisionMixin, models.Model):
+class Author(TranslatableMixin, LockableMixin, index.Indexed, DraftStateMixin, PreviewableMixin, RevisionMixin, models.Model):
     name = models.CharField(max_length=100)
     bio = RichTextField()
     revisions = GenericRelation(
@@ -195,7 +195,7 @@ class Author(LockableMixin, index.Indexed, DraftStateMixin, PreviewableMixin, Re
 
         return context
 
-    class Meta:
+    class Meta(TranslatableMixin.Meta):
         permissions = [
             ("can_edit_author_name", "Can edit author name"),
         ]
