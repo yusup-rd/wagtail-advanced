@@ -33,10 +33,10 @@ INSTALLED_APPS = [
     "settings",
     "contact",
 
+    "wagtail_localize",
+    "wagtail_localize.locales",
     "wagtail.contrib.search_promotions",
     "wagtail.contrib.routable_page",
-    "wagtail.contrib.simple_translation",
-    "wagtail.locales",
     "wagtail.api.v2",
     "rest_framework",
     "wagtail.contrib.forms",
@@ -138,7 +138,7 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 USE_L10N = True
 WAGTAIL_I18N_ENABLED = True
-WAGTAILSIMPLETRANSLATION_SYNC_PAGE_TREE = True
+# WAGTAILSIMPLETRANSLATION_SYNC_PAGE_TREE = True
 WAGTAIL_CONTENT_LANGUAGES = LANGUAGES = [
     ("en", "English"),
     ("fr", "French"),

@@ -30,6 +30,7 @@ media/
 
 # Collected static files
 staticfiles/
+static/
 
 # Cache / runtime
 .cache/

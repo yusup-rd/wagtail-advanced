@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load wagtailcore_tags wagtail_cache %}
+{% load wagtailcore_tags wagtail_cache blog_tags %}
 {% block content %}
     {% wagtailcache 500 'page-title-cache' %}
     <h1>{{ page.title }}</h1>
@@ -11,6 +11,6 @@
 {% endwagtailpagecache %}
 
 {% if page.author %}
-    {% include "includes/author_dark_mode.html" with object=page.author %}
+    {% include "includes/author_dark_mode.html" with object=page.author|get_translation_for_locale:page.locale %}
 {% endif %}
 {% endblock content %}
