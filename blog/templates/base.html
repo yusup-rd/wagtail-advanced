@@ -37,6 +37,11 @@
                     <a href="{% pageurl translation %}">{{ translation.locale.language_name_local }}</a>
                 {% endfor %}
             {% endif %}
+            <hr>
+            <div class="bg-slate-900 text-white text-xs text-center p-10">{{ settings.settings.GenericFooterText.text }}</div>
+            <div class="bg-slate-300 text-xs text-center p-10">{{ settings.settings.SocialMediaLinks.twitter }}</div>
+            <div class="bg-slate-300 text-xs text-center p-10">{{ settings.settings.SocialMediaLinks.facebook }}</div>
+            <div class="bg-slate-300 text-xs text-center p-10">{{ settings.settings.SocialMediaLinks.instagram }}</div>
         {% endblock footer %}
         {# Global javascript #}
         <script type="text/javascript" src="{% static 'js/blog.js' %}"></script>
