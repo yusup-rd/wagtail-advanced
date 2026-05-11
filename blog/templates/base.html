@@ -21,12 +21,14 @@
         {# Force all links in the live preview panel to be opened in a new tab #}
         {% if request.in_preview_panel %}<base target="_blank">{% endif %}
         {# Global stylesheets #}
-        <link rel="stylesheet" type="text/css" href="{% static 'css/blog.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
         {% block extra_css %}{# Override this in templates to add extra stylesheets #}{% endblock %}
     </head>
     <body class="{% block body_class %}{% endblock %}">
-        {% for menu_page in navbar_pages %}<a href="{{ menu_page.url }}">{{ menu_page.title }}</a>{% endfor %}
-        <hr>
+        <header>
+            <a href="/">Home</a>
+            {% for menu_page in navbar_pages %}<a href="{{ menu_page.url }}">{{ menu_page.title }}</a>{% endfor %}
+        </header>
         {% wagtailuserbar %}
         {% block content %}{% endblock %}
         {% block footer %}
